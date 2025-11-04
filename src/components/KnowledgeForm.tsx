@@ -83,71 +83,71 @@ export function KnowledgeForm({ entry, onSubmit, onClose }: KnowledgeFormProps) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white w-full sm:max-w-lg sm:rounded-lg rounded-t-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
+    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white w-full sm:max-w-lg border-4 border-black max-h-[90vh] overflow-y-auto animate-slide-up shadow-[12px_12px_0px_0px_rgba(255,255,255,0.3)]">
+        <div className="sticky top-0 bg-black border-b-4 border-white p-6 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-white uppercase tracking-wider">
             {entry ? 'Edit Entry' : 'New Entry'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 bg-white text-black hover:bg-black hover:text-white border-2 border-white transition-all"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Title <span className="text-red-500">*</span>
+            <label htmlFor="title" className="block text-sm font-bold text-black mb-2 uppercase tracking-wider">
+              Title <span className="text-black">*</span>
             </label>
             <input
               type="text"
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow ${
-                errors.title ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border-2 bg-white text-black font-medium focus:ring-0 focus:border-black outline-none transition-all ${
+                errors.title ? 'border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'border-black'
               }`}
-              placeholder="Enter a descriptive title"
+              placeholder="ENTER A DESCRIPTIVE TITLE"
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+              <p className="mt-2 text-sm text-black font-bold">{errors.title}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              Description <span className="text-red-500">*</span>
+            <label htmlFor="description" className="block text-sm font-bold text-black mb-2 uppercase tracking-wider">
+              Description <span className="text-black">*</span>
             </label>
             <textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow resize-none ${
-                errors.description ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border-2 bg-white text-black font-medium focus:ring-0 focus:border-black outline-none transition-all resize-none ${
+                errors.description ? 'border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'border-black'
               }`}
-              placeholder="Provide detailed information"
+              placeholder="PROVIDE DETAILED INFORMATION"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+              <p className="mt-2 text-sm text-black font-bold">{errors.description}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-black mb-2 uppercase tracking-wider">
               Image (Optional)
             </label>
 
             {imageUrl && (
-              <div className="mb-3 relative">
+              <div className="mb-4 relative border-4 border-black">
                 <img
                   src={imageUrl}
                   alt="Preview"
-                  className="w-full h-48 object-cover rounded-lg"
+                  className="w-full h-48 object-cover grayscale"
                 />
                 <button
                   type="button"
@@ -155,17 +155,17 @@ export function KnowledgeForm({ entry, onSubmit, onClose }: KnowledgeFormProps) 
                     setImageUrl(null);
                     setImageFile(null);
                   }}
-                  className="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-md hover:bg-gray-100 transition-colors"
+                  className="absolute top-2 right-2 p-2 bg-white border-2 border-black hover:bg-black hover:text-white transition-all"
                 >
-                  <X className="w-4 h-4 text-gray-600" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             )}
 
-            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors bg-gray-50 hover:bg-blue-50">
+            <label className="flex items-center justify-center w-full h-32 border-4 border-dashed border-black cursor-pointer hover:bg-black hover:text-white transition-all bg-white">
               <div className="text-center">
-                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <span className="text-sm text-gray-600">
+                <Upload className="w-8 h-8 mx-auto mb-2" />
+                <span className="text-sm font-bold uppercase tracking-wider">
                   {imageFile ? imageFile.name : 'Click to upload image'}
                 </span>
               </div>
@@ -178,18 +178,18 @@ export function KnowledgeForm({ entry, onSubmit, onClose }: KnowledgeFormProps) 
             </label>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-6 py-3 border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all font-bold uppercase tracking-wider"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex-1 px-6 py-3 bg-black text-white border-2 border-black hover:bg-white hover:text-black transition-all font-bold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>

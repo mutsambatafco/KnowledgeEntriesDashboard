@@ -1,75 +1,80 @@
-import { supabase } from '../lib/supabase';
 import { KnowledgeEntry, CreateKnowledgeEntry, UpdateKnowledgeEntry } from '../types';
+
+const API_URL = 'http://localhost:3001/knowledge_entries';
 
 export const knowledgeEntriesService = {
   async getAll(): Promise<KnowledgeEntry[]> {
-    const { data, error } = await supabase
-      .from('knowledge_entries')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data || [];
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error('Failed to fetch entries');
+    const data = await response.json();
+    // Sort by created_at descending (newest first)
+    return data.sort((a: KnowledgeEntry, b: KnowledgeEntry) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
   },
 
   async getById(id: string): Promise<KnowledgeEntry | null> {
-    const { data, error } = await supabase
-      .from('knowledge_entries')
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
+    const response = await fetch(`${API_URL}/${id}`);
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('Failed to fetch entry');
+    }
+    return response.json();
   },
 
   async create(entry: CreateKnowledgeEntry): Promise<KnowledgeEntry> {
-    const { data, error } = await supabase
-      .from('knowledge_entries')
-      .insert([entry])
-      .select()
-      .single();
+    const newEntry = {
+      ...entry,
+      id: Date.now().toString(), // Simple ID generation
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
 
-    if (error) throw error;
-    return data;
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newEntry),
+    });
+
+    if (!response.ok) throw new Error('Failed to create entry');
+    return response.json();
   },
 
   async update(id: string, entry: UpdateKnowledgeEntry): Promise<KnowledgeEntry> {
-    const { data, error } = await supabase
-      .from('knowledge_entries')
-      .update({ ...entry, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single();
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...entry,
+        updated_at: new Date().toISOString(),
+      }),
+    });
 
-    if (error) throw error;
-    return data;
+    if (!response.ok) throw new Error('Failed to update entry');
+    return response.json();
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
-      .from('knowledge_entries')
-      .delete()
-      .eq('id', id);
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'DELETE',
+    });
 
-    if (error) throw error;
+    if (!response.ok) throw new Error('Failed to delete entry');
   },
 
   async uploadImage(file: File): Promise<string> {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `knowledge-entries/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('images')
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage
-      .from('images')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
+    // Convert file to base64 data URL for mock implementation
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 };
