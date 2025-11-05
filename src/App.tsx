@@ -230,11 +230,10 @@ function App() {
             </div>
             <button
               onClick={handleNewEntry}
-              className="inline-flex items-center px-6 py-3 bg-white text-black rounded-none border-2 border-black hover:bg-black hover:text-white hover:border-white transition-all duration-200 font-bold uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
+              className="hidden md:inline-flex items-center px-6 py-3 bg-white text-black rounded-none border-2 border-black hover:bg-black hover:text-white hover:border-white transition-all duration-200 font-bold uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
             >
               <Plus className="w-5 h-5 mr-2" />
-              <span className="hidden sm:inline">New Entry</span>
-              <span className="sm:hidden">New</span>
+              <span>New Entry</span>
             </button>
           </div>
         </div>

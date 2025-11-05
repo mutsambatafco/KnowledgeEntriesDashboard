@@ -269,7 +269,54 @@ Mobile bottom navigation:
 - Fixed position at bottom
 - Only visible on mobile (hidden on md+ screens)
 
-## UI/UX Improvements
+## UI/UX Improvement Idea
+
+### Design Philosophy: Brutalist Minimalism Meets Progressive Enhancement
+
+The core UI/UX improvement idea behind this dashboard centers on **"progressive complexity"** - presenting a deceptively simple, bold interface that reveals sophisticated interactions as users engage with it. This approach addresses common pain points in knowledge management systems while maintaining manufacturing floor usability.
+
+#### The Problem Being Solved
+
+Manufacturing technicians often work in challenging environments - gloved hands, noisy floors, quick context switches between tasks. Traditional knowledge bases fail because they're either too complex (requiring multiple clicks to capture simple insights) or too simple (lacking the structure needed for useful retrieval). This dashboard strikes a balance through:
+
+1. **Dual Navigation Paradigm**:
+   - Mobile users get a persistent bottom dock with magnification effects for gloved/imprecise touches
+   - Desktop users access a StaggeredMenu overlay that doesn't clutter the primary workspace
+   - Both provide instant access to core actions without modal dialogs or page loads
+
+2. **Information Density Management**:
+   - Card preview shows just enough (title + 2-line description) to decide if it's relevant
+   - Click-through detail view eliminates truncation frustration
+   - Sticky back button ensures users never feel "trapped" in content
+
+3. **Visual Confidence Through Brutalism**:
+   - Bold black/white design isn't just aesthetic - it's functional
+   - High contrast works under poor lighting (common on manufacturing floors)
+   - Exaggerated shadows (`4px_4px_0px_0px`) provide tactile feedback that actions registered
+   - Sharp borders and geometric layout reduce cognitive load compared to rounded, soft UIs
+
+4. **Micro-Interactions That Build Trust**:
+   - Toast notifications confirm every action without interrupting workflow
+   - Image preview shows immediate feedback before committing uploads
+   - Delete confirmation prevents costly mistakes
+   - Loading states eliminate "did it work?" uncertainty
+
+5. **Mobile-First Detail Padding**:
+   - Solved the critical issue of bottom dock covering action buttons
+   - Responsive padding (`pb-24 md:pb-8`) ensures all interactive elements remain accessible
+   - Form modals take full screen on mobile for focused input
+
+#### The "Aha!" Moment
+
+The key insight was treating the interface as **contextually adaptive** rather than simply responsive. Desktop users see it as a traditional CRUD dashboard. Mobile users experience it as an app-like tool with native gestures (dock magnification, full-screen modals). The brutalist aesthetic serves as the visual glue that makes both experiences feel intentional rather than compromised.
+
+#### Future Enhancement Direction
+
+The logical next step would be **voice-to-text entry** for true hands-free knowledge capture on the manufacturing floor, leveraging the existing validation system to ensure quality while maximizing speed.
+
+---
+
+## UI/UX Improvements Implemented
 
 This implementation includes several UX enhancements beyond the base requirements:
 
