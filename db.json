@@ -47,6 +47,14 @@
       "image_url": null,
       "created_at": "2025-11-05T11:02:02.949Z",
       "updated_at": "2025-11-05T11:02:02.951Z"
+    },
+    {
+      "id": "1762341462855",
+      "title": "Test Entry 1762341460904",
+      "description": "This is a comprehensive test description for automated testing purposes. It contains sufficient detail to pass validation.",
+      "image_url": null,
+      "created_at": "2025-11-05T11:17:42.855Z",
+      "updated_at": "2025-11-05T11:17:42.855Z"
     }
   ]
 }
