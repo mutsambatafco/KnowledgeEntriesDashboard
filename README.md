@@ -6,11 +6,18 @@ A modern, mobile-first knowledge capture interface built with React and TypeScri
 
 - **Full CRUD Operations**: Create, Read, Update, and Delete knowledge entries
 - **Mobile-First Design**: Optimized for mobile devices with responsive layouts for tablet and desktop
-- **Image Upload**: Support for uploading and managing images with entries
+- **Detail View**: Click any entry card to view full details with edit/delete options
+- **Image Upload**: Support for uploading and managing images with entries (with preview and Base64 encoding)
 - **Real-time Validation**: Form validation with helpful error messages
-- **Intuitive UX**: Smooth animations, loading states, and confirmation dialogs
+- **Brutalist Design**: Black and white material design with bold typography and strong borders
+- **Interactive Effects**:
+  - WebGL-powered PixelBlast header animation
+  - StaggeredMenu overlay navigation
+  - Mobile dock with magnification effect
+- **Toast Notifications**: Real-time feedback for all operations (react-hot-toast)
 - **Type-Safe**: Built with TypeScript for enhanced code quality and developer experience
-- **Comprehensive Testing**: End-to-end tests with Playwright
+- **Comprehensive Testing**: Automated end-to-end tests with Playwright
+- **CI/CD Ready**: GitHub Actions workflow for automated testing
 
 ## Tech Stack
 
@@ -18,10 +25,22 @@ A modern, mobile-first knowledge capture interface built with React and TypeScri
 - **Language**: TypeScript 5.5.3
 - **Build Tool**: Vite 5.4.2
 - **Styling**: Tailwind CSS 3.4.1
-- **Icons**: Lucide React 0.344.0
+- **3D Graphics**:
+  - Three.js 0.181.0
+  - @react-three/fiber 9.4.0
+  - @react-three/postprocessing 3.0.4
+- **Animations**:
+  - GSAP 3.13.0
+  - Motion 12.23.24
+- **Icons**:
+  - Lucide React 0.344.0
+  - React Icons 5.5.0
+- **UI Libraries**:
+  - react-hot-toast 2.6.0
 - **Mock API**: json-server 1.0.0-beta.3
 - **Testing**: Playwright 1.56.1
 - **Code Quality**: ESLint with TypeScript support
+- **CI/CD**: GitHub Actions
 
 ## Prerequisites
 
@@ -42,8 +61,10 @@ cd KnowledgeEntriesDashboard
 ### 2. Install Dependencies
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
+
+**Note**: The `--legacy-peer-deps` flag is required due to React version compatibility between React 18.3.1 and @react-three/fiber.
 
 ### 3. Start the Application
 
@@ -101,14 +122,12 @@ The database comes pre-populated with 2 sample entries. You can modify [db.json]
 
 ### End-to-End Tests
 
-The project includes comprehensive Playwright tests covering:
+The project includes 2 comprehensive automated Playwright tests:
 
-1. Creating new knowledge entries
-2. Editing existing entries
-3. Deleting entries with confirmation
-4. Form validation
-5. Empty state display
-6. Form cancellation
+1. **Add Entry Test**: Creates a new knowledge entry and verifies it appears in the list
+2. **Delete Entry Test**: Creates an entry, deletes it with confirmation, and verifies removal
+
+Tests automatically start both the Vite dev server and json-server API.
 
 **Run tests:**
 
@@ -123,121 +142,184 @@ npm run test:e2e:ui
 npm run test:e2e:report
 ```
 
-**Test Requirements:**
-- Mock API server must be running (`npm run api` in a separate terminal)
-- Tests will auto-start the Vite dev server
+**Test Configuration:**
+- Tests run on Chromium only (Firefox and Safari disabled due to WebGL compatibility)
+- Automatically starts both dev server and API server via `webServer` config
+- Global test timeout: 60 seconds
+- Navigation timeout: 30 seconds
+- Action timeout: 10 seconds
 
 ## Project Structure
 
 ```
 KnowledgeEntriesDashboard/
+├── .github/
+│   └── workflows/
+│       └── playwright.yml           # GitHub Actions CI/CD workflow
 ├── src/
-│   ├── components/           # Reusable React components
-│   │   ├── DeleteConfirmModal.tsx
-│   │   ├── EmptyState.tsx
-│   │   ├── KnowledgeCard.tsx
-│   │   └── KnowledgeForm.tsx
-│   ├── services/             # API service layer
-│   │   └── knowledgeEntries.ts
-│   ├── lib/                  # External library integrations
-│   │   └── supabase.ts
-│   ├── types/                # TypeScript type definitions
-│   │   └── index.ts
-│   ├── App.tsx               # Root component
-│   ├── main.tsx              # Application entry point
-│   └── index.css             # Global styles and animations
-├── e2e/                      # Playwright E2E tests
-│   └── knowledge-entries.spec.ts
-├── public/                   # Static assets
-├── index.html                # HTML entry point
-├── vite.config.ts            # Vite configuration
-├── tailwind.config.js        # Tailwind CSS configuration
-├── playwright.config.ts      # Playwright configuration
-├── tsconfig.json             # TypeScript configuration
-└── package.json              # Project dependencies
+│   ├── components/                  # React components
+│   │   ├── Dither/
+│   │   │   └── Dither.tsx          # Dithering effect component
+│   │   ├── Dock/
+│   │   │   └── Dock.tsx            # Mobile bottom navigation dock
+│   │   ├── PixelBlast/
+│   │   │   └── PixelBlast.tsx      # WebGL header animation
+│   │   ├── PillNav/
+│   │   │   └── PillNav.tsx         # Pill-style navigation
+│   │   ├── StaggeredMenu/
+│   │   │   └── StaggeredMenu.tsx   # Overlay navigation menu
+│   │   ├── DeleteConfirmModal.tsx   # Deletion confirmation dialog
+│   │   ├── EmptyState.tsx          # Empty state component
+│   │   ├── KnowledgeCard.tsx       # Entry card component
+│   │   ├── KnowledgeDetail.tsx     # Entry detail view
+│   │   └── KnowledgeForm.tsx       # Create/edit form modal
+│   ├── services/                    # API service layer
+│   │   └── knowledgeEntries.ts     # Knowledge entries service
+│   ├── types/                       # TypeScript type definitions
+│   │   └── index.ts                # Type definitions
+│   ├── App.tsx                      # Root component
+│   ├── main.tsx                     # Application entry point
+│   ├── index.css                    # Global styles
+│   └── vite-env.d.ts               # Vite type definitions
+├── tests/                           # E2E tests
+│   └── knowledge-entries.spec.ts   # Playwright test suite
+├── public/
+│   └── logo.png                     # Application logo
+├── db.json                          # Mock API database
+├── index.html                       # HTML entry point
+├── vite.config.ts                   # Vite configuration
+├── tailwind.config.js               # Tailwind CSS configuration
+├── playwright.config.ts             # Playwright configuration
+├── tsconfig.json                    # TypeScript configuration
+├── tsconfig.app.json                # App-specific TS config
+├── tsconfig.node.json               # Node-specific TS config
+├── eslint.config.js                 # ESLint configuration
+├── postcss.config.js                # PostCSS configuration
+└── package.json                     # Project dependencies
 ```
 
 ## Key Components
 
 ### App.tsx
-Main application component that orchestrates state management and CRUD operations.
-
-### KnowledgeForm.tsx
-Modal form component for creating and editing entries with:
-- Form validation (title min 3 chars, description min 10 chars)
-- Image upload with preview
-- Mobile-optimized slide-up animation
-- Loading states during submission
+Main application component that orchestrates:
+- State management for entries, forms, modals, and detail view
+- CRUD operations via knowledgeEntriesService
+- Navigation between list view and detail view
+- Mobile dock and StaggeredMenu integration
+- Toast notifications for user feedback
 
 ### KnowledgeCard.tsx
-Displays individual knowledge entries in a card layout with:
+Clickable card component displaying entry preview:
 - Truncated description (2 lines)
 - Image display with placeholder fallback
-- Edit and Delete action buttons
-- Hover effects for better UX
+- Edit and Delete action buttons (with stopPropagation)
+- onClick handler for navigation to detail view
+- Brutalist design with black borders and shadows
+
+### KnowledgeDetail.tsx
+Full-page detail view for individual entries:
+- Back button navigation
+- Full-size image display
+- Complete description text
+- Formatted creation date
+- Edit and Delete actions
+- Responsive layout with proper spacing
+
+### KnowledgeForm.tsx
+Modal form component for creating and editing:
+- Form validation (title min 3 chars, description min 10 chars)
+- Image upload with Base64 encoding and preview
+- Mobile-optimized with bottom padding for dock
+- Full-screen modal on mobile, centered on desktop
+- Loading states during submission
+- Error handling with visual feedback
 
 ### DeleteConfirmModal.tsx
-Confirmation dialog for destructive delete operations with:
-- Warning message
-- Loading state during deletion
+Confirmation dialog for safe deletions:
+- Warning message with entry context
+- Loading state during API call
 - Cancel and confirm actions
+- Prevents accidental data loss
 
 ### EmptyState.tsx
-Friendly empty state when no entries exist, encouraging users to create their first entry.
+Friendly empty state when no entries exist:
+- Encouraging message
+- "Create First Entry" call-to-action
+- BookOpen icon for context
+
+### PixelBlast.tsx
+WebGL-powered animated header effect:
+- Circle pattern with customizable parameters
+- Ripple effects and liquid animations
+- Responsive sizing (100px mobile, 200px desktop)
+- Window check for SSR compatibility
+
+### StaggeredMenu.tsx
+Overlay navigation menu (desktop):
+- Fixed position overlay
+- Animated menu items with stagger effect
+- Social media links
+- Logo display
+- Customizable colors and styling
+
+### Dock.tsx
+Mobile bottom navigation:
+- Magnification effect on hover/touch
+- Home, New Entry, Entries, and About actions
+- Fixed position at bottom
+- Only visible on mobile (hidden on md+ screens)
 
 ## UI/UX Improvements
 
 This implementation includes several UX enhancements beyond the base requirements:
 
 ### 1. Mobile-First Responsive Design
-- **Mobile optimization**: Forms slide up from bottom on mobile devices for native app feel
+- **Mobile dock navigation**: Fixed bottom dock with magnification effect (mobile only)
+- **Desktop overlay menu**: StaggeredMenu for desktop navigation
 - **Adaptive layouts**: Single column on mobile, 2 columns on tablet, 3 columns on desktop
 - **Touch-friendly**: Large tap targets and appropriate spacing for mobile interactions
 - **Responsive header**: Button text adapts ("New Entry" on desktop, "New" on mobile)
+- **Bottom padding**: Main content and forms have mobile-specific padding to prevent dock overlap
 
 ### 2. Enhanced Visual Feedback
-- **Smooth animations**:
-  - Slide-up animation for forms (300ms)
-  - Scale-in animation for modals (200ms)
-  - Loading spinners for async operations
-- **Loading states**: Clear visual feedback during API operations
-- **Hover effects**: Interactive elements provide visual feedback on hover
-- **Focus states**: Accessible focus indicators for keyboard navigation
+- **Brutalist design system**: Black and white color scheme with bold borders and shadows
+- **Toast notifications**: Real-time feedback with react-hot-toast for all CRUD operations
+- **WebGL animations**: PixelBlast header effect with ripples and liquid animations
+- **Smooth transitions**: Interactive hover states and button animations
+- **Loading states**: Spinner indicators during API operations
+- **Shadow effects**: Consistent shadow styling (`shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`)
 
-### 3. Error Handling & Validation
-- **Real-time validation**: Immediate feedback on form inputs
-- **Inline error messages**: Clear, contextual error messages below fields
-- **Visual error states**: Red borders and text for invalid inputs
-- **Error notifications**: Dismissible error banners for API failures
+### 3. Navigation & Routing
+- **Detail view**: Click any card to view full entry details
+- **Back navigation**: Return to list view from detail page
+- **Sticky back button**: Always accessible at top of detail view
+- **Deep state management**: selectedEntry state for view switching
 
-### 4. Confirmation Dialogs
-- **Delete confirmation**: Prevents accidental deletions with clear warning
-- **Visual hierarchy**: Warning icon and descriptive message
-- **Action clarity**: "Cancel" and "Delete" buttons with distinct styling
+### 4. Error Handling & Validation
+- **Form validation**: Title (min 3 chars), Description (min 10 chars)
+- **Inline error messages**: Clear error feedback below invalid fields
+- **Toast notifications**: Error alerts for API failures
+- **Try-catch blocks**: Comprehensive error handling in service layer
 
-### 5. Empty State Design
-- **Friendly messaging**: Encouraging call-to-action when no entries exist
-- **Clear guidance**: "Create First Entry" button to guide new users
-- **Visual icon**: BookOpen icon provides context
-
-### 6. Image Upload Experience
-- **Drag-and-drop style interface**: Dashed border upload area
-- **Image preview**: Immediate preview of uploaded images
+### 5. Image Management
+- **Base64 encoding**: Images converted to Base64 for json-server compatibility
+- **Image preview**: Real-time preview of uploaded images
 - **Remove capability**: Easy removal of selected images
-- **File name display**: Shows selected file name
-- **Hover states**: Upload area changes color on hover
+- **Placeholder fallback**: Icon displayed when no image exists
+- **File input handling**: Proper FileReader implementation
 
-### 7. Accessibility Features
-- **ARIA labels**: Proper labeling for screen readers
-- **Keyboard navigation**: Full keyboard support
-- **Focus management**: Logical tab order
-- **Required field indicators**: Visual asterisks for required fields
+### 6. Accessibility Features
+- **ARIA labels**: Proper labeling for interactive elements (Edit entry, Delete entry)
+- **Semantic HTML**: Proper heading hierarchy and role attributes
+- **Keyboard navigation**: Full keyboard support for all interactions
+- **Focus indicators**: Visual focus states for accessibility
 
-### 8. Performance Optimizations
-- **Lazy loading**: Components loaded as needed
-- **Optimized images**: Proper image sizing and object-fit
-- **Efficient re-renders**: React best practices for state management
-- **Vite build optimization**: Fast builds and HMR during development
+### 7. Performance & Browser Compatibility
+- **Window checks**: SSR compatibility for WebGL components
+- **Chromium testing**: E2E tests optimized for Chromium
+- **WebGL fallback**: Graceful degradation when WebGL unavailable
+- **Vite HMR**: Fast hot module replacement during development
+- **Efficient state updates**: Optimized React re-renders
 
 ## Mobile-First Approach
 
@@ -249,12 +331,14 @@ The application is designed with a mobile-first philosophy:
 - **lg (Desktop)**: ≥ 1024px - Three column grid, full features
 
 ### Mobile Optimizations
-- Forms slide up from bottom (native app feel)
-- Touch-optimized button sizes (min 44x44px)
-- Simplified navigation on small screens
-- Reduced text on mobile buttons
-- Full-screen modals on mobile devices
-- Sticky header for constant access to actions
+- **Dock navigation**: Fixed bottom dock with Home, New Entry, Entries, and About
+- **Magnification effect**: Dock items magnify on hover for better UX
+- **Touch-optimized targets**: Large tap areas for mobile interactions
+- **Bottom padding**: Content padded to prevent dock overlap (`pb-24 md:pb-8`)
+- **Responsive text**: "New Entry" on desktop, "New" on mobile
+- **Full-width cards**: Single column layout on mobile
+- **Sticky header**: Always-accessible "New Entry" button
+- **WebGL header**: Responsive height (100px mobile, 200px desktop)
 
 ## Code Quality
 
