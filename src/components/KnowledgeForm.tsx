@@ -98,7 +98,7 @@ export function KnowledgeForm({ entry, onSubmit, onClose }: KnowledgeFormProps) 
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 pb-24 md:pb-6">
           <div>
             <label htmlFor="title" className="block text-sm font-bold text-black mb-2 uppercase tracking-wider">
               Title <span className="text-black">*</span>

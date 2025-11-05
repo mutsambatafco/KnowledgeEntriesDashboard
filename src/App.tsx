@@ -8,6 +8,7 @@ import { KnowledgeCard } from './components/KnowledgeCard';
 import { KnowledgeForm } from './components/KnowledgeForm';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 import { EmptyState } from './components/EmptyState';
+import { KnowledgeDetail } from './components/KnowledgeDetail';
 import Dock from './components/Dock/Dock';
 import StaggeredMenu from './components/StaggeredMenu/StaggeredMenu';
 import PixelBlast from './components/PixelBlast/PixelBlast';
@@ -21,6 +22,7 @@ function App() {
   const [editingEntry, setEditingEntry] = useState<KnowledgeEntry | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<KnowledgeEntry | null>(null);
 
   const loadEntries = async () => {
     try {
@@ -105,8 +107,16 @@ function App() {
     setIsFormOpen(true);
   };
 
+  const handleCardClick = (entry: KnowledgeEntry) => {
+    setSelectedEntry(entry);
+  };
+
+  const handleBackToList = () => {
+    setSelectedEntry(null);
+  };
+
   return (
-    <div className="min-h-screen bg-black relative">
+    <div className="min-h-screen bg-white relative">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -230,73 +240,88 @@ function App() {
         </div>
       </header>
 
-      <div style={{ width: '100%', height: '200px', position: 'relative', backgroundColor: '#000' }}>
-        <PixelBlast
-          variant="circle"
-          pixelSize={6}
-          color="#FFF"
-          patternScale={3}
-          patternDensity={1.2}
-          pixelSizeJitter={0.5}
-          enableRipples
-          rippleSpeed={0.4}
-          rippleThickness={0.12}
-          rippleIntensityScale={1.5}
-          liquid
-          liquidStrength={0.12}
-          liquidRadius={1.2}
-          liquidWobbleSpeed={5}
-          speed={0.6}
-          edgeFade={0.25}
-          transparent
-        />
+      <div style={{ width: '100%', height: '100px', position: 'relative', backgroundColor: '#000' }} className="md:!h-[200px]">
+        {/* PixelBlast component - may not render in all browsers */}
+        {typeof window !== 'undefined' && (
+          <PixelBlast
+            variant="circle"
+            pixelSize={6}
+            color="#FFF"
+            patternScale={3}
+            patternDensity={1.2}
+            pixelSizeJitter={0.5}
+            enableRipples
+            rippleSpeed={0.4}
+            rippleThickness={0.12}
+            rippleIntensityScale={1.5}
+            liquid
+            liquidStrength={0.12}
+            liquidRadius={1.2}
+            liquidWobbleSpeed={5}
+            speed={0.6}
+            edgeFade={0.25}
+            transparent
+          />
+        )}
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {error && (
-          <div className="mb-6 p-4 bg-white border-2 border-black flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]">
-            <p className="text-sm text-black font-semibold">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="text-black hover:text-white hover:bg-black border border-black p-1 transition-colors"
-            >
-              <Plus className="w-5 h-5 rotate-45" />
-            </button>
-          </div>
-        )}
-
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-10 h-10 text-white animate-spin mb-4" />
-            <p className="text-white font-semibold">Loading entries...</p>
-          </div>
-        ) : entries.length === 0 ? (
-          <EmptyState onCreateNew={handleNewEntry} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8">
+        {selectedEntry ? (
+          <KnowledgeDetail
+            entry={selectedEntry}
+            onBack={handleBackToList}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
         ) : (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-white font-semibold uppercase tracking-wider">
-                {entries.length} {entries.length === 1 ? 'entry' : 'entries'} found
-              </p>
-              <button
-                onClick={loadEntries}
-                className="inline-flex items-center text-sm px-4 py-2 bg-white text-black border-2 border-black hover:bg-black hover:text-white hover:border-white transition-all font-bold uppercase tracking-wider"
-              >
-                <RefreshCw className="w-4 h-4 mr-1" />
-                Refresh
-              </button>
-            </div>
+            {error && (
+              <div className="mb-6 p-4 bg-white border-2 border-black flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]">
+                <p className="text-sm text-black font-semibold">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-black hover:text-white hover:bg-black border border-black p-1 transition-colors"
+                >
+                  <Plus className="w-5 h-5 rotate-45" />
+                </button>
+              </div>
+            )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {entries.map((entry) => (
-                <KnowledgeCard
-                  key={entry.id}
-                  entry={entry}
-                  onEdit={handleEdit}
-                  onDelete={handleDeleteClick}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <Loader2 className="w-10 h-10 text-white animate-spin mb-4" />
+                <p className="text-white font-semibold">Loading entries...</p>
+              </div>
+            ) : entries.length === 0 ? (
+              <EmptyState onCreateNew={handleNewEntry} />
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <p className="text-sm text-white font-semibold uppercase tracking-wider">
+                    {entries.length} {entries.length === 1 ? 'entry' : 'entries'} found
+                  </p>
+                  <button
+                    onClick={loadEntries}
+                    className="inline-flex items-center text-sm px-4 py-2 bg-white text-black border-2 border-black hover:bg-black hover:text-white hover:border-white transition-all font-bold uppercase tracking-wider"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-1" />
+                    Refresh
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {entries.map((entry) => (
+                    <KnowledgeCard
+                      key={entry.id}
+                      entry={entry}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteClick}
+                      onClick={handleCardClick}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </main>
